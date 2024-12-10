@@ -1,0 +1,16 @@
+# Adapted from https://github.com/kubernetes-sigs/prometheus-adapter/blob/master/docs/walkthrough.md
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: sample-app
+  name: sample-app
+spec:
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: sample-app
+  type: ClusterIP

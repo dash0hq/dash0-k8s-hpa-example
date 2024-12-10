@@ -1,0 +1,22 @@
+# Adapted from https://github.com/kubernetes-sigs/prometheus-adapter/blob/master/docs/walkthrough.md
+prometheus:
+  url: https://api.eu-west-1.aws.dash0-dev.com
+  port: 443
+  path: /api/prometheus
+extraArguments:
+- '--prometheus-header=Authorization=Bearer $DASH0_AUTH_TOKEN'
+- '--prometheus-header=Dash0-Dataset=default'
+rules:
+  default: false
+  custom:
+  - seriesQuery: '{otel_metric_name="http_requests_total",k8s_namespace_name!="",k8s_pod_name!=""}'
+    resources:
+      overrides:
+        k8s_namespace_name: {resource: "namespace"}
+        k8s_pod_name: {resource: "pod"}
+    name:
+      as: http_requests
+    metricsQuery: |
+      sum (increase(<<.Series>>{<<.LabelMatchers>>}[2m])) by (<<.GroupBy>>)
+  external: []
+logLevel: 6
