@@ -192,11 +192,8 @@ In Dash0 you can create dashboards (and check rules and more!) using powerful, s
 
 For example this Dashboard panel shows how the horizontal pod autoscaler was scaling up the pods of the sample application from the original one replica, to nine:
 
-![The HPA autoscaling the pods of the sample application](./images/dash0-hpa-request-count.png)
+![The HPA autoscaling the pods of the sample application](./images/hpa-in-action.png)
 
-![The count of sample application pods over time](./images/dash0-hpa-pod-count.png)
-
-The two charts above are actually the same chart, with the second showing only the pod count over time.
 Notice how the horizontal pod autoscaler was delayed in its reaction.
 I left the load generation on until I saw more pods come online, and immediately turned it off.
 Then it took a while with no traffic until the horiozontal pod autoscaler, based on the count of HTTP requests, decided to scale down.
