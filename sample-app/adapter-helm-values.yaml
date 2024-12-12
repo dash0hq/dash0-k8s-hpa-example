@@ -1,6 +1,6 @@
 # Adapted from https://github.com/kubernetes-sigs/prometheus-adapter/blob/master/docs/walkthrough.md
 prometheus:
-  url: https://api.eu-west-1.aws.dash0-dev.com
+  url: https://api.eu-west-1.aws.dash0.com
   port: 443
   path: /api/prometheus
 extraArguments:
