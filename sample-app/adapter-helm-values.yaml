@@ -1,10 +1,10 @@
 # Adapted from https://github.com/kubernetes-sigs/prometheus-adapter/blob/master/docs/walkthrough.md
 prometheus:
-  url: https://api.eu-west-1.aws.dash0.com
+  url: $DASH0_PROMQL_ENDPOINT # Depends in which region you created your Dash0 organization, e.g., https://api.eu-west-1.aws.dash0.com
   port: 443
   path: /api/prometheus
 extraArguments:
-- '--prometheus-header=Authorization=Bearer $DASH0_AUTH_TOKEN'
+- '--prometheus-header=Authorization=Bearer $DASH0_AUTH_TOKEN' # Get the auth token from the Settings menu of your Dash0 organization
 - '--prometheus-header=Dash0-Dataset=default'
 rules:
   default: false

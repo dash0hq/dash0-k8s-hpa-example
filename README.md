@@ -105,6 +105,8 @@ minikube service sample-app --url
 Deploy the Dash0 operator to scrape the `/metrics` endpoint of the app:
 
 ```sh
+# The auto token and ingestion endpoint depend on your Dash0 organization
+# You will find the correct settings in the the Onboarding instructions at https://app.dash0.com/onboarding/instructions/k8s/dash0-k8s-operator
 helm repo add dash0-operator https://dash0hq.github.io/dash0-operator
 helm repo update dash0-operator
 kubectl create namespace dash0-system
@@ -112,7 +114,7 @@ kubectl create secret generic dash0-authorization-secret --namespace dash0-syste
 helm upgrade --install \
   --namespace dash0-system \
   --set operator.dash0Export.enabled=true \
-  --set operator.dash0Export.endpoint=ingress.eu-west-1.aws.dash0-dev.com:4317 \
+  --set operator.dash0Export.endpoint=$DASH0_INGRESS_ENDPOINT \
   --set operator.dash0Export.secretRef.name=dash0-authorization-secret \
   --set operator.dash0Export.secretRef.key=token \
   dash0-operator \
