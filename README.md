@@ -26,7 +26,7 @@ flowchart TD
 
 subgraph Z[" "]
 direction LR
-    A[Kubernetes Horizontal Pod Autoscaler] -->|fetch metric| P[Prometheus Adapter]
+    A[Kubernetes Horizontal Pod Autoscaler] -->|fetch metric| P["Metric server <br/> (Prometheus Adapter)"]
     P -->|query over PromQL| D[Dash0]
 end
 ```
