@@ -1,11 +1,11 @@
 # Adapted from https://github.com/kubernetes-sigs/prometheus-adapter/blob/master/docs/walkthrough.md
 prometheus:
-  url: $DASH0_PROMQL_ENDPOINT # Depends in which region you created your Dash0 organization, e.g., https://api.eu-west-1.aws.dash0.com
+#  url: $DASH0_PROMQL_ENDPOINT # Depends in which region you created your Dash0 organization, e.g., https://api.eu-west-1.aws.dash0.com
   port: 443
   path: /api/prometheus
 extraArguments:
-- '--prometheus-header=Authorization=Bearer $DASH0_AUTH_TOKEN' # Get the auth token from the Settings menu of your Dash0 organization
-- '--prometheus-header=Dash0-Dataset=default'
+# - '--prometheus-header=Authorization=Bearer $DASH0_AUTH_TOKEN' # Get the auth token from the Settings menu of your Dash0 organization
+# - '--prometheus-header=Dash0-Dataset=default'
 rules:
   default: false
   custom:
@@ -16,7 +16,14 @@ rules:
         k8s_pod_name: {resource: "pod"}
     name:
       as: http_requests
-    metricsQuery: |
-      sum (increase(<<.Series>>{<<.LabelMatchers>>}[2m])) by (<<.GroupBy>>)
+    metricsQuery: 'sum(increase(http_requests_total{<<.LabelMatchers>>}[2m]))by(<<.GroupBy>>)'
+  - seriesQuery: '{otel_metric_name="http_requests_total",k8s_namespace_name!="",k8s_pod_name!=""}'
+    resources:
+      overrides:
+        k8s_namespace_name: {resource: "namespace"}
+        k8s_pod_name: {resource: "pod"}
+    name:
+      as: http_requests_p99
+    metricsQuery: '(max({otel_metric_name="dash0.resources",<<.LabelMatchers>>})by(<<.GroupBy>>)*0)unless(histogram_quantile(0.99,sum(rate({otel_metric_name="dash0.spans.duration",dash0_operation_name!="",<<.LabelMatchers>>}[2m]))by(<<.GroupBy>>,le))*1000)'
   external: []
 logLevel: 6

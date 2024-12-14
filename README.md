@@ -60,14 +60,14 @@ minikube start
 
 ### Install the Prometheus Adapter
 
-**IMPORTANT:** You will need to replace the value of `$DASH0_AUTH_TOKEN` in the [./sample-app/adapter-helm-values.yaml](./sample-app/adapter-helm-values.yaml) file!
+**IMPORTANT:** You will need to replace the values of `$DASH0_BASE_URL` and `$DASH0_AUTH_TOKEN` in the following command:
 
 Install the [Prometheus Adapter for Kubernetes Metrics APIs](https://github.com/kubernetes-sigs/prometheus-adapter):
 
 ```sh
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 helm repo update
-helm upgrade --install -n monitoring --create-namespace prometheus-adapter prometheus-community/prometheus-adapter --values=./sample-app/adapter-helm-values.yaml
+helm upgrade --install -n monitoring --create-namespace prometheus-adapter prometheus-community/prometheus-adapter --values=./sample-app/adapter-helm-values.yaml --set "prometheus.url=$DASH0_BASE_URL" --set "extraArguments[0]=--prometheus-header=Dash0-Dataset=default" --set "extraArguments[1]=--prometheus-header=Authorization=Bearer $DASH0_AUTH_TOKEN"
 ```
 
 Starting ther adapter takes... a while.
@@ -100,13 +100,13 @@ Expose the application on localhost so that we can curl it:
 minikube service sample-app --url
 ```
 
-**IMPORTANT:** You will need to replace the value of `$DASH0_AUTH_TOKEN` in the [./sample-app/adapter-helm-values.yaml](./sample-app/adapter-helm-values.yaml) file!
+Deploy the Dash0 operator to scrape the `/metrics` endpoint of the app following the instructions in the [Dash0 onboarding](https://app.dash0.com/onboarding/instructions/k8s/dash0-k8s-operator):
 
-Deploy the Dash0 operator to scrape the `/metrics` endpoint of the app:
+**IMPORTANT:** You will need to replace the value of `$DASH0_AUTH_TOKEN` and `$DASH0_INGRESS_ENDPOINT` in the following. Get the correct settings at https://app.dash0.com/onboarding/instructions/k8s/dash0-k8s-operator.
 
 ```sh
 # The auto token and ingestion endpoint depend on your Dash0 organization
-# You will find the correct settings in the the Onboarding instructions at https://app.dash0.com/onboarding/instructions/k8s/dash0-k8s-operator
+# Get the correct settings at https://app.dash0.com/onboarding/instructions/k8s/dash0-k8s-operator
 helm repo add dash0-operator https://dash0hq.github.io/dash0-operator
 helm repo update dash0-operator
 kubectl create namespace dash0-system
@@ -119,12 +119,15 @@ helm upgrade --install \
   --set operator.dash0Export.secretRef.key=token \
   dash0-operator \
   dash0-operator/dash0-operator
-kubectl apply -f - <<EOF
+```
+
+Then create this resource:
+
+```yaml
 apiVersion: operator.dash0.com/v1alpha1
 kind: Dash0Monitoring
 metadata:
   name: dash0-monitoring-resource
-EOF
 ```
 
 ### Configure the Horizontal Pod Autoscaler

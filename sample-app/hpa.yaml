@@ -18,10 +18,17 @@ spec:
   # given metric across all pods controlled by the autoscaling target
   - type: Pods
     pods:
-      # use the metric that you used above: pods/http_requests
       metric:
         name: http_requests
       # target 200 requests max per replica
+      target:
+        type: Value
+        averageValue: "200"
+  - type: Pods
+    pods:
+      metric:
+        name: http_requests_p99
+      # target max 200ms p99 per replica
       target:
         type: Value
         averageValue: "200"
