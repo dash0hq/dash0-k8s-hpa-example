@@ -104,6 +104,9 @@ Deploy the Dash0 operator to scrape the `/metrics` endpoint of the app following
 
 **IMPORTANT:** You will need to replace the value of `$DASH0_AUTH_TOKEN` and `$DASH0_INGRESS_ENDPOINT` in the following. Get the correct settings at https://app.dash0.com/onboarding/instructions/k8s/dash0-k8s-operator.
 
+**NOTE:** Any way of getting into Dash0 the telemetry you want is fine, like the [OpenTelemetry operator](https://opentelemetry.io/docs/kubernetes/operator/).
+This tutorial uses the Dash0 operator because of its "Just Works (TM)" user experience.
+
 ```sh
 # The auto token and ingestion endpoint depend on your Dash0 organization
 # Get the correct settings at https://app.dash0.com/onboarding/instructions/k8s/dash0-k8s-operator
